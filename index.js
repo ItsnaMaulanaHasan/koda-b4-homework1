@@ -31,6 +31,7 @@ const daftarMenu = [
 ]
 
 let daftarKeranjang = []
+let daftarHistory = []
 
 const readLine =  require('node:readline')
 const rl = readLine.createInterface({
@@ -55,69 +56,174 @@ const menuUtama = () => {
             case 2:
                 console.clear();
                 lihatKeranjang()
-                rl.close();
                 break;
             case 3:
-                console.log("history")
-                rl.close();
+                console.clear();
+                lihatHistory()
                 break;
             case 4:
                 rl.close();
                 break;
             default:
-                console.log("ERROR")
-                rl.close();
+                rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                    console.clear();
+                    menuUtama()
+                })
                 break;
         }
     })
 }
 
 const cariMenu = () => {
-    console.log(" --- Daftar Menu MIXUE --- ")
+    console.log(" --- Daftar Menu MIXUE --- \n")
     let count = 0
     while (daftarMenu[count] !== undefined){
-        console.log(`${count+1}. ${daftarMenu[count].nama}`)
+        console.log(` ${count+1}. ${daftarMenu[count].nama}, Harga: ${daftarMenu[count].harga}`);
         count++
     }
+    console.log(`\n -------------------------\n`);
 
-    rl.question("Masukkan No Menu: ", (input) => {
-        input = parseInt(input)
-        rl.question("Masukkan jumlah pesanan: ", (inputQty) =>{
-            let dataMenuDipilih = [{
-                ...daftarMenu[input],
-                ...{
-                    qty: parseInt(inputQty)
+    rl.question(` Masukkan no menu yang dipilih (1-${count}): `, (input) => {
+        input = parseInt(input) - 1
+        if (input >= 0 && input <= count-1) {
+            rl.question(" Masukkan jumlah pesanan: ", (inputQty) =>{
+                let dataMenuDipilih = [{
+                    ...daftarMenu[input],
+                    ...{
+                        qty: parseInt(inputQty)
+                    },
+                    ...{
+                        subTotal: daftarMenu[input].harga * parseInt(inputQty)
+                    }
+                }]
+                if (daftarKeranjang[0] !== undefined){
+                    let count = 0
+                    let flag = false
+                    while(daftarKeranjang[count] !== undefined){
+                        if (dataMenuDipilih[0].nama === daftarKeranjang[count].nama){
+                            daftarKeranjang[count] = dataMenuDipilih[0]
+                            flag = true
+                        }
+                        count++
+                    }
+                    if (flag === false){
+                        daftarKeranjang = [ ...daftarKeranjang, ...dataMenuDipilih ]
+                    } 
+                } else {
+                    daftarKeranjang = [ ...daftarKeranjang, ...dataMenuDipilih ]
                 }
-            }]
-            daftarKeranjang = [ ...daftarKeranjang, ...dataMenuDipilih ]
-            rl.question("Ingin memilih menu lagi (y/n)? ", (input) => {
-                switch (input) {
-                    case "y":
-                        console.clear();
-                        cariMenu()
-                        break;
-                    case "n":
-                        console.clear();
-                        menuUtama()
-                        rl.close
-                        break
-                    default:
-                        console.log("ERROR")
-                        break;
-                }
+                console.log("\n *Menu berhasil ditambahkan ke keranjang*\n")
+                rl.question(" Ingin memilih menu lagi (y/n)? ", (input) => {
+                    switch (input) {
+                        case "y":
+                        case "Y":
+                            console.clear();
+                            cariMenu()
+                            break;
+                        case "n":
+                        case "N":
+                            console.clear();
+                            menuUtama()
+                            break
+                        default:
+                            rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                                console.clear();
+                                cariMenu()
+                            })
+                            break;
+                    }
+                })
             })
-        })
+        } else {
+            rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                console.clear();
+                cariMenu()
+            })
+        }
     })
 }
 
 const lihatKeranjang = () => {
-    console.log(" --- Daftar Keranjang --- ")
-    let count = 0
-    console.table(daftarKeranjang)
-    // while (daftarKeranjang[count] !== undefined){
-    //     console.table(`${count+1}. ${daftarKeranjang[count].nama}`)
-    //     count++
-    // }
+    console.log(" --- Daftar Keranjang --- \n")
+    if (daftarKeranjang[0] === undefined){
+        rl.question("\n *Keranjang masih kosong*\n", (input) => {
+            console.clear()
+            menuUtama()
+        })
+    } else{
+        let count = 0
+        let totalAll = 0
+        while (daftarKeranjang[count] !== undefined){
+            totalAll += daftarKeranjang[count].subTotal
+            console.table(` ${count+1}. ${daftarKeranjang[count].nama}, Harga: ${daftarKeranjang[count].harga}, Jumlah: ${daftarKeranjang[count].qty}, Subtotal: ${daftarKeranjang[count].subTotal}`)
+            count++
+        }
+        console.log(`\n -------------------------\n`);
+        console.log(` Total Pesanan: ${totalAll}\n`)
+        
+        rl.question(" Lakukan pemesanan (y/n)? ", (input) => {
+            switch (input) {
+                case "y":
+                case "Y":
+                    console.clear();
+                    rl.question(`\n Anda yakin ingin melakukan pemesanan dengan total ${totalAll} (y/n)? `, (input) => {
+                        switch (input) {
+                            case "y":
+                            case "Y":
+                                daftarHistory = [ ...daftarHistory, ...daftarKeranjang]
+                                daftarKeranjang = []
+                                rl.question("\n *Selamat anda berhasil melakukan pemesanan*\n \n Silahkan lakukan pembayaran di kasir ", () => {
+                                    console.clear()
+                                    menuUtama()
+                                })
+                                break;
+                            case "n":
+                            case "N":
+                                console.clear()
+                                lihatKeranjang()
+                                break;
+                            default:
+                                break;
+                        }
+                    })
+                    break;
+                case "n":
+                case "N":
+                    console.clear();
+                    menuUtama()
+                    break
+                default:
+                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                        console.clear();
+                        lihatKeranjang()
+                    })
+                    break;
+            }
+        })
+    }
 }
 
+const lihatHistory = () => {
+    console.log(" --- Daftar History Pemesanan --- \n")
+    if (daftarHistory[0] === undefined){
+        rl.question("\n *History Pemesanan masih kosong*\n", (input) => {
+            console.clear()
+            menuUtama()
+        })
+    } else {
+        let count = 0
+        while (daftarHistory[count] !== undefined){
+            console.table(` ${count+1}. ${daftarHistory[count].nama}, Harga: ${daftarHistory[count].harga}, Jumlah: ${daftarHistory[count].qty}, Subtotal: ${daftarHistory[count].subTotal}`)
+            count++
+        }
+        console.log(`\n -------------------------\n`);
+
+        rl.question(" ",() => {
+            console.clear()
+            menuUtama()
+        })
+    }
+}
+
+console.clear()
 menuUtama()
