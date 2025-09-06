@@ -17,16 +17,60 @@ koda-b4-homework1
 
 const daftarMenu = [
     {
-        nama: "Jus",
-        harga: 2000
+        nama: "Mixue Ice Cream",
+        harga: 8000
     },
     {
-        nama: "Mie",
-        harga: 2000
+        nama: "BOBA Sundae",
+        harga: 16000
     },
     {
-        nama: "Bakso",
-        harga: 2000
+        nama: "Strawberry Mi-Shake",
+        harga: 16000
+    },
+    {
+        nama: "BOBA Mi-Shake",
+        harga: 16000
+    },
+    {
+        nama: "Chocolate Cookies Smoothies",
+        harga: 16000
+    },
+    {
+        nama: "Brown Sugar Pearl Milk Tea",
+        harga: 19000
+    },
+    {
+        nama: "Pearl Milk Tea",
+        harga: 22000
+    },
+    {
+        nama: "Oats Milk Tea",
+        harga: 22000
+    },
+    {
+        nama: "Coconut Jelly Milk Tea",
+        harga: 22000
+    },
+    {
+        nama: "Red Bean Milk Tea",
+        harga: 22000
+    },
+    {
+        nama: "Fresh Squeezed Lemonade",
+        harga: 10000
+    },
+    {
+        nama: "Peach Earl Grey Tea",
+        harga: 16000
+    },
+    {
+        nama: "Original Jasmine Tea",
+        harga: 10000
+    },
+    {
+        nama: "Original Earl Grey Tea",
+        harga: 10000
     },
 ]
 
@@ -81,11 +125,17 @@ const cariMenu = () => {
         console.log(` ${count+1}. ${daftarMenu[count].nama}, Harga: ${daftarMenu[count].harga}`);
         count++
     }
+    console.log(" 99. Kembali ke menu utama")
     console.log(`\n -------------------------\n`);
 
     rl.question(` Masukkan no menu yang dipilih (1-${count}): `, (input) => {
-        input = parseInt(input) - 1
-        if (input >= 0 && input <= count-1) {
+        input = parseInt(input)
+        if (input === 99){
+            console.clear();
+            menuUtama()
+        }
+        if (input > 0 && input <= count ) {
+            input -= 1
             rl.question(" Masukkan jumlah pesanan: ", (inputQty) =>{
                 let dataMenuDipilih = [{
                     ...daftarMenu[input],
@@ -112,7 +162,7 @@ const cariMenu = () => {
                 } else {
                     daftarKeranjang = [ ...daftarKeranjang, ...dataMenuDipilih ]
                 }
-                console.log("\n *Menu berhasil ditambahkan ke keranjang*\n")
+                console.log(`\n *${dataMenuDipilih[0].nama} sejumlah ${dataMenuDipilih[0].qty} berhasil ditambahkan ke keranjang*\n`)
                 rl.question(" Ingin memilih menu lagi (y/n)? ", (input) => {
                     switch (input) {
                         case "y":
@@ -183,6 +233,10 @@ const lihatKeranjang = () => {
                                 lihatKeranjang()
                                 break;
                             default:
+                                rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                                    console.clear();
+                                    lihatKeranjang()
+                                })
                                 break;
                         }
                     })
