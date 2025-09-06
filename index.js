@@ -134,49 +134,60 @@ const cariMenu = () => {
         if (input > 0 && input <= count ) {
             input -= 1
             rl.question(" Masukkan jumlah pesanan: ", (inputQty) =>{
-                let dataMenuDipilih = [{
-                    ...daftarMenu[input],
-                    ...{
-                        qty: parseInt(inputQty)
-                    },
-                    ...{
-                        subTotal: daftarMenu[input].harga * parseInt(inputQty)
-                    }
-                }]
-                if (daftarKeranjang[0] !== undefined){
-                    let count = 0
-                    let flag = false
-                    while(daftarKeranjang[count] !== undefined){
-                        if (dataMenuDipilih[0].nama === daftarKeranjang[count].nama){
-                            daftarKeranjang[count] = dataMenuDipilih[0]
-                            flag = true
+                inputQty = parseInt(inputQty)
+                if (inputQty > 0){
+                    let dataMenuDipilih = {
+                        ...daftarMenu[input],
+                        ...{
+                            qty: inputQty
+                        },
+                        ...{
+                            subTotal: daftarMenu[input].harga * inputQty
                         }
-                        count++
                     }
-                    if (flag === false){
-                        daftarKeranjang = [ ...daftarKeranjang, ...dataMenuDipilih ]
-                    } 
-                } else {
-                    daftarKeranjang = [ ...daftarKeranjang, ...dataMenuDipilih ]
-                }
-                console.log(`\n *${dataMenuDipilih[0].nama} sejumlah ${dataMenuDipilih[0].qty} berhasil ditambahkan ke keranjang*\n`)
-                rl.question(" Ingin memilih menu lagi (y/n)? ", (input) => {
-                    switch (input) {
-                        case "y":
-                        case "Y":
-                            cariMenu()
-                            break
-                        case "n":
-                        case "N":
-                            menuUtama()
-                            break
-                        default:
-                            rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                    if (daftarKeranjang[0] !== undefined){
+                        let count = 0
+                        let flag = false
+                        while(daftarKeranjang[count] !== undefined){
+                            if (dataMenuDipilih.nama === daftarKeranjang[count].nama){
+                                daftarKeranjang[count] = dataMenuDipilih
+                                flag = true
+                            }
+                            count++
+                        }
+                        if (flag === false){
+                            daftarKeranjang = [ ...daftarKeranjang, ...[dataMenuDipilih] ]
+                        } 
+                    } else {
+                        daftarKeranjang = [ ...daftarKeranjang, ...[dataMenuDipilih] ]
+                    }
+                    console.log(`\n *${dataMenuDipilih.nama} sejumlah ${dataMenuDipilih.qty} berhasil ditambahkan ke keranjang*\n`)
+                    rl.question(" Ingin memilih menu lagi (y/n)? ", (input) => {
+                        switch (input) {
+                            case "y":
+                            case "Y":
                                 cariMenu()
-                            })
-                            break
-                    }
-                })
+                                break
+                            case "n":
+                            case "N":
+                                menuUtama()
+                                break
+                            default:
+                                rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                                    cariMenu()
+                                })
+                                break
+                        }
+                    })
+                } else if(inputQty = 0){
+                    rl.question(" Input tidak boleh 0 ", () => {
+                        cariMenu()
+                    })
+                } else {
+                    rl.question(" Input tidak sesuai yang diharapkan ", () => {
+                        cariMenu()
+                    })
+                }
             })
         } else {
             rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
