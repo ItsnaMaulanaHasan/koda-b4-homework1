@@ -84,6 +84,7 @@ const rl = readLine.createInterface({
 })
 
 const menuUtama = () => {
+    console.clear()
     console.log("\nSelamat Datang di Aplikasi Pemesanan Mixue\n")
     console.log("1. Cari Menu")
     console.log("2. Lihat Keranjang")
@@ -94,44 +95,40 @@ const menuUtama = () => {
         input = parseInt(input)
         switch (input) {
             case 1:
-                console.clear();
                 cariMenu()
-                break;
+                break
             case 2:
-                console.clear();
                 lihatKeranjang()
-                break;
+                break
             case 3:
-                console.clear();
                 lihatHistory()
-                break;
+                break
             case 4:
-                rl.close();
-                break;
+                keluar()
+                break
             default:
                 rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                    console.clear();
                     menuUtama()
                 })
-                break;
+                break
         }
     })
 }
 
 const cariMenu = () => {
+    console.clear()
     console.log(" --- Daftar Menu MIXUE --- \n")
     let count = 0
     while (daftarMenu[count] !== undefined){
-        console.log(` ${count+1}. ${daftarMenu[count].nama}, Harga: ${daftarMenu[count].harga}`);
+        console.log(` ${count+1}. ${daftarMenu[count].nama}, Harga: ${daftarMenu[count].harga}`)
         count++
     }
     console.log(" 99. Kembali ke menu utama")
-    console.log(`\n -------------------------\n`);
+    console.log(`\n -------------------------\n`)
 
     rl.question(` Masukkan no menu yang dipilih (1-${count}): `, (input) => {
         input = parseInt(input)
         if (input === 99){
-            console.clear();
             menuUtama()
         }
         if (input > 0 && input <= count ) {
@@ -167,26 +164,22 @@ const cariMenu = () => {
                     switch (input) {
                         case "y":
                         case "Y":
-                            console.clear();
                             cariMenu()
-                            break;
+                            break
                         case "n":
                         case "N":
-                            console.clear();
                             menuUtama()
                             break
                         default:
                             rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                                console.clear();
                                 cariMenu()
                             })
-                            break;
+                            break
                     }
                 })
             })
         } else {
             rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                console.clear();
                 cariMenu()
             })
         }
@@ -194,10 +187,10 @@ const cariMenu = () => {
 }
 
 const lihatKeranjang = () => {
+    console.clear()
     console.log(" --- Daftar Keranjang --- \n")
     if (daftarKeranjang[0] === undefined){
         rl.question("\n *Keranjang masih kosong*\n", (input) => {
-            console.clear()
             menuUtama()
         })
     } else{
@@ -208,14 +201,14 @@ const lihatKeranjang = () => {
             console.table(` ${count+1}. ${daftarKeranjang[count].nama}, Harga: ${daftarKeranjang[count].harga}, Jumlah: ${daftarKeranjang[count].qty}, Subtotal: ${daftarKeranjang[count].subTotal}`)
             count++
         }
-        console.log(`\n -------------------------\n`);
+        console.log(`\n -------------------------\n`)
         console.log(` Total Pesanan: ${totalAll}\n`)
         
         rl.question(" Lakukan pemesanan (y/n)? ", (input) => {
             switch (input) {
                 case "y":
                 case "Y":
-                    console.clear();
+                    console.clear()
                     rl.question(`\n Anda yakin ingin melakukan pemesanan dengan total ${totalAll} (y/n)? `, (input) => {
                         switch (input) {
                             case "y":
@@ -223,45 +216,40 @@ const lihatKeranjang = () => {
                                 daftarHistory = [ ...daftarHistory, ...daftarKeranjang]
                                 daftarKeranjang = []
                                 rl.question("\n *Selamat anda berhasil melakukan pemesanan*\n \n Silahkan lakukan pembayaran di kasir ", () => {
-                                    console.clear()
                                     menuUtama()
                                 })
-                                break;
+                                break
                             case "n":
                             case "N":
-                                console.clear()
                                 lihatKeranjang()
-                                break;
+                                break
                             default:
                                 rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                                    console.clear();
                                     lihatKeranjang()
                                 })
-                                break;
+                                break
                         }
                     })
-                    break;
+                    break
                 case "n":
                 case "N":
-                    console.clear();
                     menuUtama()
                     break
                 default:
                     rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                        console.clear();
                         lihatKeranjang()
                     })
-                    break;
+                    break
             }
         })
     }
 }
 
 const lihatHistory = () => {
+    console.clear()
     console.log(" --- Daftar History Pemesanan --- \n")
     if (daftarHistory[0] === undefined){
         rl.question("\n *History Pemesanan masih kosong*\n", (input) => {
-            console.clear()
             menuUtama()
         })
     } else {
@@ -270,14 +258,50 @@ const lihatHistory = () => {
             console.table(` ${count+1}. ${daftarHistory[count].nama}, Harga: ${daftarHistory[count].harga}, Jumlah: ${daftarHistory[count].qty}, Subtotal: ${daftarHistory[count].subTotal}`)
             count++
         }
-        console.log(`\n -------------------------\n`);
+        console.log(`\n -------------------------\n`)
 
         rl.question(" ",() => {
-            console.clear()
             menuUtama()
         })
     }
 }
 
-console.clear()
+const keluar = () => {
+    console.clear()
+    if (daftarKeranjang[0] !== undefined){
+        rl.question(" Masih ada item di keranjang, apakah anda ingin membatalkannya (y/n)? ", (input) => {
+            switch (input) {
+                case "y":
+                case "Y":
+                    rl.close
+                    break
+                case "n":
+                case "N":
+                    menuUtama()
+                    break
+                default:
+                    break
+            }
+        })
+    } else if(daftarHistory[0] !== undefined){
+        console.log("\n Selamat menikmati☺️\n")
+        rl.close()
+    } else {
+        rl.question("\n Yakin ga mesen dulu nih (y/n)? ", (input) => {
+            switch (input) {
+                case "y":
+                case "Y":
+                    rl.close
+                    break
+                case "n":
+                case "N":
+                    menuUtama()
+                    break
+                default:
+                    break
+            }
+        })
+    }
+}
+
 menuUtama()
