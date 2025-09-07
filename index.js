@@ -130,8 +130,7 @@ const cariMenu = () => {
         input = parseInt(input)
         if (input === 99){
             menuUtama()
-        }
-        if (input > 0 && input <= count ) {
+        } else if (input > 0 && input <= count ) {
             input -= 1
             rl.question(" Masukkan jumlah pesanan: ", (inputQty) =>{
                 inputQty = parseInt(inputQty)
@@ -162,8 +161,8 @@ const cariMenu = () => {
                         daftarKeranjang = [ ...daftarKeranjang, ...[dataMenuDipilih] ]
                     }
                     console.log(`\n *${dataMenuDipilih.nama} sejumlah ${dataMenuDipilih.qty} berhasil ditambahkan ke keranjang*\n`)
-                    rl.question(" Ingin memilih menu lagi (y/n)? ", (input) => {
-                        switch (input) {
+                    rl.question(" Ingin memilih menu lagi (y/n)? ", (inputTambah) => {
+                        switch (inputTambah) {
                             case "y":
                             case "Y":
                                 cariMenu()
@@ -209,19 +208,19 @@ const lihatKeranjang = () => {
         let totalAll = 0
         while (daftarKeranjang[count] !== undefined){
             totalAll += daftarKeranjang[count].subTotal
-            console.table(` ${count+1}. ${daftarKeranjang[count].nama}, Harga: ${daftarKeranjang[count].harga}, Jumlah: ${daftarKeranjang[count].qty}, Subtotal: ${daftarKeranjang[count].subTotal}`)
+            console.log(` ${count+1}. ${daftarKeranjang[count].nama}, Harga: ${daftarKeranjang[count].harga}, Jumlah: ${daftarKeranjang[count].qty}, Subtotal: ${daftarKeranjang[count].subTotal}`)
             count++
         }
         console.log(`\n -------------------------\n`)
         console.log(` Total Pesanan: ${totalAll}\n`)
-        
+          
         rl.question(" Lakukan pemesanan (y/n)? ", (input) => {
             switch (input) {
                 case "y":
                 case "Y":
                     console.clear()
-                    rl.question(`\n Anda yakin ingin melakukan pemesanan dengan total ${totalAll} (y/n)? `, (input) => {
-                        switch (input) {
+                    rl.question(`\n Anda yakin ingin melakukan pemesanan dengan total ${totalAll} (y/n)? `, (inputConfirm) => {
+                        switch (inputConfirm) {
                             case "y":
                             case "Y":
                                 daftarHistory = [ ...daftarHistory, ...daftarKeranjang]
@@ -241,7 +240,6 @@ const lihatKeranjang = () => {
                                 break
                         }
                     })
-                    break
                 case "n":
                 case "N":
                     menuUtama()
@@ -260,18 +258,17 @@ const lihatHistory = () => {
     console.clear()
     console.log(" --- Daftar History Pemesanan --- \n")
     if (daftarHistory[0] === undefined){
-        rl.question("\n *History Pemesanan masih kosong*\n", (input) => {
+        rl.question("\n *History Pemesanan masih kosong*\n", () => {
             menuUtama()
         })
     } else {
         let count = 0
         while (daftarHistory[count] !== undefined){
-            console.table(` ${count+1}. ${daftarHistory[count].nama}, Harga: ${daftarHistory[count].harga}, Jumlah: ${daftarHistory[count].qty}, Subtotal: ${daftarHistory[count].subTotal}`)
+            console.log(` ${count+1}. ${daftarHistory[count].nama}, Harga: ${daftarHistory[count].harga}, Jumlah: ${daftarHistory[count].qty}, Subtotal: ${daftarHistory[count].subTotal}`)
             count++
         }
-        console.log(`\n -------------------------\n`)
 
-        rl.question(" ",() => {
+        rl.question(" \n -------------------------\n",() => {
             menuUtama()
         })
     }
@@ -280,17 +277,20 @@ const lihatHistory = () => {
 const keluar = () => {
     console.clear()
     if (daftarKeranjang[0] !== undefined){
-        rl.question(" Masih ada item di keranjang, apakah anda ingin membatalkannya (y/n)? ", (input) => {
-            switch (input) {
+        rl.question(" Masih ada item di keranjang, apakah anda ingin membatalkannya (y/n)? ", (confirmExit) => {
+            switch (confirmExit) {
                 case "y":
                 case "Y":
-                    rl.close
+                    rl.close()
                     break
                 case "n":
                 case "N":
                     menuUtama()
                     break
                 default:
+                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                        keluar()
+                    })
                     break
             }
         })
@@ -298,17 +298,20 @@ const keluar = () => {
         console.log("\n Selamat menikmati☺️\n")
         rl.close()
     } else {
-        rl.question("\n Yakin ga mesen dulu nih (y/n)? ", (input) => {
-            switch (input) {
+        rl.question("\n Yakin ga mesen dulu nih (y/n)? ", (inputConfirm) => {
+            switch (inputConfirm) {
                 case "y":
                 case "Y":
-                    rl.close
+                    rl.close()
                     break
                 case "n":
                 case "N":
                     menuUtama()
                     break
                 default:
+                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                        keluar()
+                    })
                     break
             }
         })
