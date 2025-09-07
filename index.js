@@ -240,6 +240,7 @@ const lihatKeranjang = () => {
                                 break
                         }
                     })
+                    break
                 case "n":
                 case "N":
                     menuUtama()
