@@ -34,6 +34,17 @@ flowchart TD
     outputError2@{shape: lean-r, label: '"Input tidak sesuai yang diharapkan"'}
     inputKosong2@{shape: lean-r, label: Click Enter}
     callKeluar2@{shape: rect, label: "keluar()"}
+    decis11@{shape: diamond, label: confirmInput = "y"}
+    decis12@{shape: diamond, label: confirmInput = "Y"}
+    decis13@{shape: diamond, label: confirmInput = "n"}
+    decis14@{shape: diamond, label: confirmInput = "N"}
+    close4@{shape: rect, label: "rl.close()"}
+    callMenuUtama3@{shape: rect, label: "menuUtama()"}
+    outputError3@{shape: lean-r, label: '"Input tidak sesuai yang diharapkan"'}
+    inputKosong3@{shape: lean-r, label: Click Enter}
+    callKeluar3@{shape: rect, label: "keluar()"}
+    outputConfirmInput@{shpae: lean-r, label: '"Anda yakin ingin keluar (y/n)? "'}
+    inputConfirmInput@{shape: lean-r, label: confirmInput}
 
     break1@{shape: rect, label: break}
     break2@{shape: rect, label: break}
@@ -41,13 +52,20 @@ flowchart TD
     break4@{shape: rect, label: break}
     break5@{shape: rect, label: break}
     break6@{shape: rect, label: break}
+    break7@{shape: rect, label: break}
+    break8@{shape: rect, label: break}
+    break9@{shape: rect, label: break}
 
     start --> consoleClear --> decis1 -- true --> ouputAdaKeranjang --> confirmExit --> decis3 -- true --> close1 --> break1
     decis3 -- false --> decis4 -- true --> close1
     decis4 -- false --> decis5 -- true --> callMenuUtama1 --> break2
     decis5 -- false --> decis6 -- true --> callMenuUtama1
     decis6 -- false --> outputError1 --> inputKosong1 --> callKeluar1 --> break3 
-    decis1 -- false --> decis2 -- true --> ouputAdaHistory --> close2
+    decis1 -- false --> decis2 -- true --> outputConfirmInput --> inputConfirmInput --> decis11 -- true --> ouputAdaHistory --> close2 --> break7
+    decis11 -- false --> decis12 -- true -->  ouputAdaHistory
+    decis12 -- false --> decis13 -- true --> callMenuUtama3 --> break8
+    decis13 -- false --> decis14 -- true --> callMenuUtama3
+    decis14 -- false --> outputError3 --> inputKosong3 --> callKeluar3 --> break9
     decis2 -- false --> outputConfirm --> inputConfirm --> decis7 -- true --> close3 --> break4
     decis7 -- false --> decis8 -- true --> close3
     decis8 -- false --> decis9 -- true --> callMenuUtama2 --> break5
@@ -61,6 +79,8 @@ flowchart TD
     break4 --> stop
     break5 --> stop
     break6 --> stop
-    close2 --> stop
+    break7 --> stop
+    break8 --> stop
+    break9 --> stop
 
 ```

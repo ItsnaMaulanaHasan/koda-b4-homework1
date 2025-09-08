@@ -296,8 +296,24 @@ const keluar = () => {
             }
         })
     } else if(daftarHistory[0] !== undefined){
-        console.log("\n Selamat menikmati☺️\n")
-        rl.close()
+        rl.question("\n Anda yakin ingin keluar (y/n)? ", (confirmInput) => {
+            switch (confirmInput) {
+                case "y":
+                case "Y":
+                    console.log("\n Selamat menikmati☺️\n")
+                    rl.close()
+                    break
+                case "n":
+                case "N":
+                    menuUtama()
+                    break
+                default:
+                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
+                        keluar()
+                    })
+                    break
+            }
+        })
     } else {
         rl.question("\n Yakin ga mesen dulu nih (y/n)? ", (inputConfirm) => {
             switch (inputConfirm) {
