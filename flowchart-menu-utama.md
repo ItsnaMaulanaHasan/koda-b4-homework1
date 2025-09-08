@@ -32,7 +32,8 @@ flowchart TD
     true4Input@{shape: rect, label: "keluar()"}
     break4@{shape: rect, label: break}
 
-    defaultInput@{shape: lean-r, label: User input random}
+    outputDefaultInput@{shape: lean-r, label: '"Input tidak sesuai yang diharapkan"'}
+    defaultInput@{shape: lean-r, label: Click Enter}
     defaultProses@{shape: rect, label: "menuUtama()"}
     break5@{shape: rect, label: break}
 
@@ -42,7 +43,7 @@ flowchart TD
     case1Input -- false --> case2Input -- true --> true2Input --> break2
     case2Input -- false --> case3Input -- true --> true3Input --> break3
     case3Input -- false --> case4Input -- true --> true4Input --> break4
-    case4Input -- false --> defaultInput --> defaultProses --> break5
+    case4Input -- false --> outputDefaultInput --> defaultInput --> defaultProses --> break5
 
     break1 --> stop
     break2 --> stop
