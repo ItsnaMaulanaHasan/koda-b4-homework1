@@ -38,7 +38,6 @@ flowchart TD
     decis12@{shape: diamond, label: confirmInput = "Y"}
     decis13@{shape: diamond, label: confirmInput = "n"}
     decis14@{shape: diamond, label: confirmInput = "N"}
-    close4@{shape: rect, label: "rl.close()"}
     callMenuUtama3@{shape: rect, label: "menuUtama()"}
     outputError3@{shape: lean-r, label: '"Input tidak sesuai yang diharapkan"'}
     inputKosong3@{shape: lean-r, label: Click Enter}
