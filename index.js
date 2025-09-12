@@ -178,7 +178,7 @@ const cariMenu = () => {
                                 break
                         }
                     })
-                } else if(inputQty = 0){
+                } else if(inputQty === 0){
                     rl.question(" Input tidak boleh 0 ", () => {
                         cariMenu()
                     })
