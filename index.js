@@ -1,338 +1,341 @@
-/*
-Aplikasi pemesanan makanan
-1. Menampilkan menu
-2. Pencarian makanan
-3. Melihat Keranjang
-4. History pemesanan
-5. Total: total semua
-6. Subtotoal: total harga per item
+const listMenu = [
+  {
+    name: "Mixue Ice Cream",
+    price: 8000,
+  },
+  {
+    name: "BOBA Sundae",
+    price: 16000,
+  },
+  {
+    name: "Strawberry Mi-Shake",
+    price: 16000,
+  },
+  {
+    name: "BOBA Mi-Shake",
+    price: 16000,
+  },
+  {
+    name: "Chocolate Cookies Smoothies",
+    price: 16000,
+  },
+  {
+    name: "Brown Sugar Pearl Milk Tea",
+    price: 19000,
+  },
+  {
+    name: "Pearl Milk Tea",
+    price: 22000,
+  },
+  {
+    name: "Oats Milk Tea",
+    price: 22000,
+  },
+  {
+    name: "Coconut Jelly Milk Tea",
+    price: 22000,
+  },
+  {
+    name: "Red Bean Milk Tea",
+    price: 22000,
+  },
+  {
+    name: "Fresh Squeezed Lemonade",
+    price: 10000,
+  },
+  {
+    name: "Peach Earl Grey Tea",
+    price: 16000,
+  },
+  {
+    name: "Original Jasmine Tea",
+    price: 10000,
+  },
+  {
+    name: "Original Earl Grey Tea",
+    price: 10000,
+  },
+];
 
-koda-b4-homework1
-    - index.js
-    - flowchart-pesan-makanan.md
-    - flowchart-keranjang.md
-    - .... dst
-    - README.md
-*/
+let carts = [];
+let histories = [];
 
-const daftarMenu = [
-    {
-        nama: "Mixue Ice Cream",
-        harga: 8000
-    },
-    {
-        nama: "BOBA Sundae",
-        harga: 16000
-    },
-    {
-        nama: "Strawberry Mi-Shake",
-        harga: 16000
-    },
-    {
-        nama: "BOBA Mi-Shake",
-        harga: 16000
-    },
-    {
-        nama: "Chocolate Cookies Smoothies",
-        harga: 16000
-    },
-    {
-        nama: "Brown Sugar Pearl Milk Tea",
-        harga: 19000
-    },
-    {
-        nama: "Pearl Milk Tea",
-        harga: 22000
-    },
-    {
-        nama: "Oats Milk Tea",
-        harga: 22000
-    },
-    {
-        nama: "Coconut Jelly Milk Tea",
-        harga: 22000
-    },
-    {
-        nama: "Red Bean Milk Tea",
-        harga: 22000
-    },
-    {
-        nama: "Fresh Squeezed Lemonade",
-        harga: 10000
-    },
-    {
-        nama: "Peach Earl Grey Tea",
-        harga: 16000
-    },
-    {
-        nama: "Original Jasmine Tea",
-        harga: 10000
-    },
-    {
-        nama: "Original Earl Grey Tea",
-        harga: 10000
-    },
-]
-
-let daftarKeranjang = []
-let daftarHistory = []
-
-const readLine =  require('node:readline')
+const readLine = require("node:readline");
 const rl = readLine.createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
+  input: process.stdin,
+  output: process.stdout,
+});
 
-const menuUtama = () => {
-    console.clear()
-    console.log("\nSelamat Datang di Aplikasi Pemesanan Mixue\n")
-    console.log("1. Cari Menu")
-    console.log("2. Lihat Keranjang")
-    console.log("3. Lihat History")
-    console.log("4. EXIT\n")
+/**
+ * Fungsi helper untuk menampilkan prompt dan menjalankan callback
+ * @param {string} message - Pesan yang ditampilkan
+ * @param {function} callback - Fungsi callback yang dijalankan setelah input
+ */
+const interfaceInput = (message, callback) => {
+  rl.question(message, callback);
+};
 
-    rl.question("Masukkan Input: ", (input) => {
-        input = parseInt(input)
-        switch (input) {
-            case 1:
-                cariMenu()
-                break
-            case 2:
-                lihatKeranjang()
-                break
-            case 3:
-                lihatHistory()
-                break
-            case 4:
-                keluar()
-                break
-            default:
-                rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                    menuUtama()
-                })
-                break
-        }
-    })
-}
+/**
+ * Fungsi helper untuk validasi input tidak sesuai
+ * @param {string} message - Pesan error (optional)
+ * @param {function} callbackRetry - Fungsi yang akan dipanggil kembali
+ */
+const handleInvalidInput = (
+  message = "\n *Input tidak sesuai yang diharapkan*",
+  callbackRetry
+) => {
+  interfaceInput(message, () => {
+    callbackRetry();
+  });
+};
 
-const cariMenu = () => {
-    console.clear()
-    console.log(" --- Daftar Menu MIXUE --- \n")
-    let count = 0
-    while (daftarMenu[count] !== undefined){
-        console.log(` ${count+1}. ${daftarMenu[count].nama}, Harga: ${daftarMenu[count].harga}`)
-        count++
+/**
+ * Fungsi helper untuk konfirmasi y/n
+ * @param {string} message - Pesan konfirmasi
+ * @param {function} callbackYes - Callback jika pilih 'y' atau 'Y'
+ * @param {function} callbackNo - Callback jika pilih 'n' atau 'N'
+ * @param {function} callbackRetry - Callback jika input tidak sesuai
+ */
+const confirmInput = (message, callbackYes, callbackNo, callbackRetry) => {
+  interfaceInput(message, (input) => {
+    switch (input) {
+      case "y":
+      case "Y":
+        callbackYes();
+        break;
+      case "n":
+      case "N":
+        callbackNo();
+        break;
+      default:
+        handleInvalidInput(undefined, callbackRetry);
     }
-    console.log(" 99. Kembali ke menu utama")
-    console.log(`\n -------------------------\n`)
+  });
+};
 
-    rl.question(` Masukkan no menu yang dipilih (1-${count}): `, (input) => {
-        input = parseInt(input)
-        if (input === 99){
-            menuUtama()
-        } else if (input > 0 && input <= count ) {
-            input -= 1
-            rl.question(" Masukkan jumlah pesanan: ", (inputQty) =>{
-                inputQty = parseInt(inputQty)
-                if (inputQty > 0){
-                    let dataMenuDipilih = {
-                        ...daftarMenu[input],
-                        ...{
-                            qty: inputQty
-                        },
-                        ...{
-                            subTotal: daftarMenu[input].harga * inputQty
-                        }
-                    }
-                    if (daftarKeranjang[0] !== undefined){
-                        let count = 0
-                        let flag = false
-                        while(daftarKeranjang[count] !== undefined){
-                            if (dataMenuDipilih.nama === daftarKeranjang[count].nama){
-                                daftarKeranjang[count] = dataMenuDipilih
-                                flag = true
-                            }
-                            count++
-                        }
-                        if (flag === false){
-                            daftarKeranjang = [ ...daftarKeranjang, ...[dataMenuDipilih] ]
-                        } 
-                    } else {
-                        daftarKeranjang = [ ...daftarKeranjang, ...[dataMenuDipilih] ]
-                    }
-                    console.log(`\n *${dataMenuDipilih.nama} sejumlah ${dataMenuDipilih.qty} berhasil ditambahkan ke keranjang*\n`)
-                    rl.question(" Ingin memilih menu lagi (y/n)? ", (inputTambah) => {
-                        switch (inputTambah) {
-                            case "y":
-                            case "Y":
-                                cariMenu()
-                                break
-                            case "n":
-                            case "N":
-                                menuUtama()
-                                break
-                            default:
-                                rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                                    cariMenu()
-                                })
-                                break
-                        }
-                    })
-                } else if(inputQty === 0){
-                    rl.question(" Input tidak boleh 0 ", () => {
-                        cariMenu()
-                    })
-                } else {
-                    rl.question(" Input tidak sesuai yang diharapkan ", () => {
-                        cariMenu()
-                    })
-                }
-            })
+/**
+ * Menu utama aplikasi
+ * Menampilkan pilihan: Pilih Menu, Lihat Keranjang, Lihat History, EXIT
+ */
+const mainMenu = () => {
+  console.clear();
+  console.log("\nSelamat Datang di Aplikasi Pemesanan Mixue\n");
+  console.log("1. Pilih Menu");
+  console.log("2. Lihat Keranjang");
+  console.log("3. Lihat History");
+  console.log("4. EXIT\n");
+
+  interfaceInput("Masukkan Input: ", (input) => {
+    input = parseInt(input);
+    switch (input) {
+      case 1:
+        selectMenu();
+        break;
+      case 2:
+        showCart();
+        break;
+      case 3:
+        showHistory();
+        break;
+      case 4:
+        exit();
+        break;
+      default:
+        handleInvalidInput(undefined, mainMenu);
+    }
+  });
+};
+
+/**
+ * Fungsi untuk memilih menu dan menambahkan ke keranjang
+ */
+const selectMenu = () => {
+  console.clear();
+  console.log(" --- Daftar Menu MIXUE --- \n");
+  let count = 0;
+  while (listMenu[count] !== undefined) {
+    const { name, price } = listMenu[count];
+    console.log(` ${count + 1}. ${name}, Harga: ${price}`);
+    count++;
+  }
+  console.log(" 99. Kembali ke menu utama");
+  console.log(`\n -------------------------\n`);
+
+  interfaceInput(` Masukkan no menu yang dipilih (1-${count}): `, (input) => {
+    input = parseInt(input);
+    if (input === 99) {
+      mainMenu();
+    } else if (input > 0 && input <= count) {
+      input -= 1;
+      interfaceInput(" Masukkan jumlah pesanan: ", (inputQty) => {
+        inputQty = parseInt(inputQty);
+        if (inputQty > 0) {
+          let dataSelectedMenu = {
+            ...listMenu[input],
+            ...{
+              qty: inputQty,
+            },
+            ...{
+              subTotal: listMenu[input].price * inputQty,
+            },
+          };
+          if (carts[0] !== undefined) {
+            let count = 0;
+            let flag = false;
+            while (carts[count] !== undefined) {
+              if (dataSelectedMenu.name === carts[count].name) {
+                carts[count] = dataSelectedMenu;
+                flag = true;
+              }
+              count++;
+            }
+            if (flag === false) {
+              carts = [...carts, ...[dataSelectedMenu]];
+            }
+          } else {
+            carts = [...carts, ...[dataSelectedMenu]];
+          }
+          console.log(
+            `\n *${dataSelectedMenu.name} sejumlah ${dataSelectedMenu.qty} berhasil ditambahkan ke keranjang*\n`
+          );
+          confirmInput(
+            " Ingin memilih menu lagi (y/n)? ",
+            selectMenu,
+            mainMenu,
+            selectMenu
+          );
+        } else if (inputQty === 0) {
+          handleInvalidInput(" Input tidak boleh 0 ", selectMenu);
         } else {
-            rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                cariMenu()
-            })
+          handleInvalidInput(undefined, selectMenu);
         }
-    })
-}
-
-const lihatKeranjang = () => {
-    console.clear()
-    console.log(" --- Daftar Keranjang --- \n")
-    if (daftarKeranjang[0] === undefined){
-        rl.question("\n *Keranjang masih kosong*\n", (input) => {
-            menuUtama()
-        })
-    } else{
-        let count = 0
-        let totalAll = 0
-        while (daftarKeranjang[count] !== undefined){
-            totalAll += daftarKeranjang[count].subTotal
-            console.log(` ${count+1}. ${daftarKeranjang[count].nama}, Harga: ${daftarKeranjang[count].harga}, Jumlah: ${daftarKeranjang[count].qty}, Subtotal: ${daftarKeranjang[count].subTotal}`)
-            count++
-        }
-        console.log(`\n -------------------------\n`)
-        console.log(` Total Pesanan: ${totalAll}\n`)
-          
-        rl.question(" Lakukan pemesanan (y/n)? ", (input) => {
-            switch (input) {
-                case "y":
-                case "Y":
-                    console.clear()
-                    rl.question(`\n Anda yakin ingin melakukan pemesanan dengan total ${totalAll} (y/n)? `, (inputConfirm) => {
-                        switch (inputConfirm) {
-                            case "y":
-                            case "Y":
-                                daftarHistory = [ ...daftarHistory, ...daftarKeranjang]
-                                daftarKeranjang = []
-                                rl.question("\n *Selamat anda berhasil melakukan pemesanan*\n \n Silahkan lakukan pembayaran di kasir ", () => {
-                                    menuUtama()
-                                })
-                                break
-                            case "n":
-                            case "N":
-                                lihatKeranjang()
-                                break
-                            default:
-                                rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                                    lihatKeranjang()
-                                })
-                                break
-                        }
-                    })
-                    break
-                case "n":
-                case "N":
-                    menuUtama()
-                    break
-                default:
-                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                        lihatKeranjang()
-                    })
-                    break
-            }
-        })
-    }
-}
-
-const lihatHistory = () => {
-    console.clear()
-    console.log(" --- Daftar History Pemesanan --- \n")
-    if (daftarHistory[0] === undefined){
-        rl.question("\n *History Pemesanan masih kosong*\n", () => {
-            menuUtama()
-        })
+      });
     } else {
-        let count = 0
-        while (daftarHistory[count] !== undefined){
-            console.log(` ${count+1}. ${daftarHistory[count].nama}, Harga: ${daftarHistory[count].harga}, Jumlah: ${daftarHistory[count].qty}, Subtotal: ${daftarHistory[count].subTotal}`)
-            count++
-        }
-
-        rl.question(" \n -------------------------\n",() => {
-            menuUtama()
-        })
+      handleInvalidInput(undefined, selectMenu);
     }
-}
+  });
+};
 
-const keluar = () => {
-    console.clear()
-    if (daftarKeranjang[0] !== undefined){
-        rl.question(" Masih ada item di keranjang, apakah anda ingin membatalkannya (y/n)? ", (confirmExit) => {
-            switch (confirmExit) {
-                case "y":
-                case "Y":
-                    rl.close()
-                    break
-                case "n":
-                case "N":
-                    menuUtama()
-                    break
-                default:
-                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                        keluar()
-                    })
-                    break
-            }
-        })
-    } else if(daftarHistory[0] !== undefined){
-        rl.question("\n Anda yakin ingin keluar (y/n)? ", (confirmInput) => {
-            switch (confirmInput) {
-                case "y":
-                case "Y":
-                    console.log("\n Selamat menikmati☺️\n")
-                    rl.close()
-                    break
-                case "n":
-                case "N":
-                    menuUtama()
-                    break
-                default:
-                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                        keluar()
-                    })
-                    break
-            }
-        })
-    } else {
-        rl.question("\n Yakin ga mesen dulu nih (y/n)? ", (inputConfirm) => {
-            switch (inputConfirm) {
-                case "y":
-                case "Y":
-                    rl.close()
-                    break
-                case "n":
-                case "N":
-                    menuUtama()
-                    break
-                default:
-                    rl.question("\n *Input tidak sesuai yang diharapkan*", () => {
-                        keluar()
-                    })
-                    break
-            }
-        })
+/**
+ * Fungsi untuk menampilkan isi keranjang dan melakukan checkout
+ */
+const showCart = () => {
+  console.clear();
+  console.log(" --- Daftar Keranjang --- \n");
+  if (carts[0] === undefined) {
+    interfaceInput("\n *Keranjang masih kosong*\n", () => {
+      mainMenu();
+    });
+  } else {
+    let count = 0;
+    let totalAll = 0;
+    while (carts[count] !== undefined) {
+      const { name, price, qty, subTotal } = carts[count];
+      totalAll += subTotal;
+      console.log(
+        ` ${
+          count + 1
+        }. ${name}, Harga: ${price}, Jumlah: ${qty}, Subtotal: ${subTotal}`
+      );
+      count++;
     }
-}
+    console.log(`\n -------------------------\n`);
+    console.log(` Total Pesanan: ${totalAll}\n`);
 
-menuUtama()
+    interfaceInput(" Lakukan pemesanan (y/n)? ", (input) => {
+      switch (input) {
+        case "y":
+        case "Y":
+          console.clear();
+          confirmInput(
+            `\n Anda yakin ingin melakukan pemesanan dengan total ${totalAll} (y/n)? `,
+            () => {
+              histories = [...histories, ...carts];
+              carts = [];
+              interfaceInput(
+                "\n *Selamat anda berhasil melakukan pemesanan*\n \n Silahkan lakukan pembayaran di kasir ",
+                () => {
+                  mainMenu();
+                }
+              );
+            },
+            showCart,
+            showCart
+          );
+          break;
+        case "n":
+        case "N":
+          mainMenu();
+          break;
+        default:
+          handleInvalidInput(undefined, showCart);
+      }
+    });
+  }
+};
+
+/**
+ * Fungsi untuk menampilkan history pemesanan
+ */
+const showHistory = () => {
+  console.clear();
+  console.log(" --- Daftar History Pemesanan --- \n");
+  if (histories[0] === undefined) {
+    interfaceInput("\n *History Pemesanan masih kosong*\n", () => {
+      mainMenu();
+    });
+  } else {
+    let count = 0;
+    while (histories[count] !== undefined) {
+      const { name, price, qty, subTotal } = histories[count];
+      console.log(
+        ` ${
+          count + 1
+        }. ${name}, Harga: ${price}, Jumlah: ${qty}, Subtotal: ${subTotal}`
+      );
+      count++;
+    }
+
+    interfaceInput(" \n -------------------------\n", () => {
+      mainMenu();
+    });
+  }
+};
+
+/**
+ * Fungsi untuk keluar dari aplikasi
+ */
+const exit = () => {
+  console.clear();
+  if (carts[0] !== undefined) {
+    confirmInput(
+      " Masih ada item di keranjang, apakah anda ingin membatalkannya (y/n)? ",
+      () => {
+        rl.close();
+      },
+      mainMenu,
+      exit
+    );
+  } else if (histories[0] !== undefined) {
+    confirmInput(
+      "\n Anda yakin ingin exit (y/n)? ",
+      () => {
+        console.log("\n Selamat menikmati☺️\n");
+        rl.close();
+      },
+      mainMenu,
+      exit
+    );
+  } else {
+    confirmInput(
+      "\n Yakin ga mesen dulu nih (y/n)? ",
+      () => {
+        rl.close();
+      },
+      mainMenu,
+      exit
+    );
+  }
+};
+
+mainMenu();
