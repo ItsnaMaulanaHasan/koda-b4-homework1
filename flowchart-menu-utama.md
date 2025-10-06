@@ -16,34 +16,34 @@ flowchart TD
 
     input@{shape: lean-r, label: input}
 
-    case1Input@{shape: diamond, label: input = 1}
-    true1Input@{shape: rect, label: "cariMenu()"}
+    cekInputCariMenu@{shape: diamond, label: input = 1}
+    callCariMenu@{shape: rect, label: "cariMenu()"}
     break1@{shape: rect, label: break}
 
-    case2Input@{shape: diamond, label: input = 2}
-    true2Input@{shape: rect, label: "lihatKeranjang()"}
+    cekInputLihatKeranjang@{shape: diamond, label: input = 2}
+    callLihatKeranjang@{shape: rect, label: "lihatKeranjang()"}
     break2@{shape: rect, label: break}
 
-    case3Input@{shape: diamond, label: input = 3}
-    true3Input@{shape: rect, label: "lihatHistory()"}
+    cekInputLihatHistory@{shape: diamond, label: input = 3}
+    callLihatHistory@{shape: rect, label: "lihatHistory()"}
     break3@{shape: rect, label: break}
 
-    case4Input@{shape: diamond, label: input = 4}
-    true4Input@{shape: rect, label: "keluar()"}
+    cekInputKeluar@{shape: diamond, label: input = 4}
+    callKeluar@{shape: rect, label: "keluar()"}
     break4@{shape: rect, label: break}
 
-    outputDefaultInput@{shape: lean-r, label: '"Input tidak sesuai yang diharapkan"'}
-    defaultInput@{shape: lean-r, label: Click Enter}
-    defaultProses@{shape: rect, label: "menuUtama()"}
+    outputErrorInput@{shape: lean-r, label: '"Input tidak sesuai yang diharapkan"'}
+    enterErrorInput@{shape: lean-r, label: Click Enter}
+    callMenuUtama@{shape: rect, label: "menuUtama()"}
     break5@{shape: rect, label: break}
 
 
     start --> consoleClear --> outputMenu --> input
-    input --> case1Input -- true --> true1Input --> break1
-    case1Input -- false --> case2Input -- true --> true2Input --> break2
-    case2Input -- false --> case3Input -- true --> true3Input --> break3
-    case3Input -- false --> case4Input -- true --> true4Input --> break4
-    case4Input -- false --> outputDefaultInput --> defaultInput --> defaultProses --> break5
+    input --> cekInputCariMenu -- true --> callCariMenu --> break1
+    cekInputCariMenu -- false --> cekInputLihatKeranjang -- true --> callLihatKeranjang --> break2
+    cekInputLihatKeranjang -- false --> cekInputLihatHistory -- true --> callLihatHistory --> break3
+    cekInputLihatHistory -- false --> cekInputKeluar -- true --> callKeluar --> break4
+    cekInputKeluar -- false --> outputErrorInput --> enterErrorInput --> callMenuUtama --> break5
 
     break1 --> stop
     break2 --> stop

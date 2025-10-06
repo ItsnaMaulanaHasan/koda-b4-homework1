@@ -72,10 +72,9 @@ flowchart TD
     menuUtama@{shape: rect, label: "function menuUtama"}
     cariMenu@{shape: rect, label: "function cariMenu"}
     lihatKeranjang@{shape: rect, label: "function lihatKeranjang"}
-    lihatHistory@{shape: rect, label: "function lihatHisrory"}
+    lihatHistory@{shape: rect, label: "function lihatHistory"}
     keluar@{shape: rect, label: "function keluar"}
     callMenuUtama@{shape: rect, label: "menuUtama()"}
-
 
     start --> daftarMenu --> daftarKeranjang --> daftarHistory --> readLine --> rl --> menuUtama --> cariMenu --> lihatKeranjang --> lihatHistory --> keluar --> callMenuUtama --> stop
 ```
